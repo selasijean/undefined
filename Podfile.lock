@@ -1,0 +1,56 @@
+PODS:
+  - Alamofire (4.3.0)
+  - Bolts/Tasks (1.7.0)
+  - GoogleMaps (1.13.2)
+  - Material (2.4.16):
+    - Material/Core (= 2.4.16)
+  - Material/Core (2.4.16)
+  - MXParallaxHeader (0.6.1)
+  - Parse (1.13.0):
+    - Bolts/Tasks (~> 1.6)
+  - ParseUI (1.2.0):
+    - Bolts/Tasks (~> 1.3)
+    - Parse (~> 1.9)
+
+DEPENDENCIES:
+  - Alamofire (from `https://github.com/Alamofire/Alamofire.git`, branch `master`)
+  - GoogleMaps
+  - Material (from `https://github.com/CosmicMind/Material.git`, branch `master`)
+  - MXParallaxHeader (from `https://github.com/maxep/MXParallaxHeader`, branch `master`)
+  - Parse
+  - ParseUI
+
+EXTERNAL SOURCES:
+  Alamofire:
+    :branch: master
+    :git: https://github.com/Alamofire/Alamofire.git
+  Material:
+    :branch: master
+    :git: https://github.com/CosmicMind/Material.git
+  MXParallaxHeader:
+    :branch: master
+    :git: https://github.com/maxep/MXParallaxHeader
+
+CHECKOUT OPTIONS:
+  Alamofire:
+    :commit: fa3c6d09b603f417c7788adb51ca0cade75b3d67
+    :git: https://github.com/Alamofire/Alamofire.git
+  Material:
+    :commit: 7092f41e5b7ccc3f0282d20cf703e634ba8c29fd
+    :git: https://github.com/CosmicMind/Material.git
+  MXParallaxHeader:
+    :commit: 6119c34f9e282b7085971fa92d77dc8704ca10d0
+    :git: https://github.com/maxep/MXParallaxHeader
+
+SPEC CHECKSUMS:
+  Alamofire: 1f72088aff8f6b40828dadd61be2e9a31beca01e
+  Bolts: a0058fa3b331c5a1e4402d534f2dae36dbff31e4
+  GoogleMaps: b20a103ff307f58392e603cf142e59d7e30374c1
+  Material: 9f9bc35a2280f7c485467ff4f29b8ec5ae45c692
+  MXParallaxHeader: 858c403532ed933b381556a81ce333d7065ad182
+  Parse: f51c24d2feb412e4b2d6cc73d37cb24e8d0089bc
+  ParseUI: af2eba584799da4a9fbdac0e178662d7438b502e
+
+PODFILE CHECKSUM: af207ed0146dcfa26bdd1366914a38911cb10a62
+
+COCOAPODS: 1.2.0
