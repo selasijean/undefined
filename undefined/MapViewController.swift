@@ -10,7 +10,7 @@ import UIKit
 import GoogleMaps
 import Material
 
-class MapViewController: UIViewController {
+class MapViewController: UIViewController, UISearchDisplayDelegate{
     
     var frameForSearchBarsSuperView: CGRect = CGRect(x: 0, y: 0, width: 375, height: 142)
     var frameForStartSearchBar: CGRect!
@@ -22,9 +22,17 @@ class MapViewController: UIViewController {
     
     @IBOutlet weak var backgroundView: UIView!
     @IBOutlet weak var searchBarFrame: UIView!
-    var tableView: UITableView!
+    
+    var resultsViewController : GMSAutocompleteResultsViewController?
+    var searchController: UISearchController?
+    
+    @IBOutlet weak var tableView: UITableView!
+//    var tableView: UITableView!
     var tableViewY: CGFloat!
     
+    var fetcher: GMSAutocompleteFetcher?
+    var placeClient: GMSPlacesClient?
+    var searchResults: [GMSPlace] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,7 +41,8 @@ class MapViewController: UIViewController {
         setUpMainBar()
         setUpBackButton()
         setupTableView()
-
+        configurePlaceAutoComplete()
+//        setupSearchControllers()
         // Do any additional setup after loading the view.
     }
 
@@ -43,6 +52,7 @@ class MapViewController: UIViewController {
     }
     
     func setupSearchBars(){
+        
         frameForDestinationSearchBar = CGRect(x: 0, y: 0, width: 313, height: 38)
         frameForStartSearchBar = CGRect(x: 0, y: 0, width: 313, height: 38)
         startSearchBar = UISearchBar()
@@ -56,12 +66,11 @@ class MapViewController: UIViewController {
         destinationSearchBar.barTintColor = UIColor.clear
         destinationSearchBar.borderColor = UIColor.clear
         
-        
         startSearchBar.barTintColor = UIColor.clear
         startSearchBar.borderColor = UIColor.clear
         startSearchBar.backgroundImage = UIImage()
         startSearchBar.delegate = self
-        
+
 //        startSearchBar.searchBarStyle = .minimal
 //        UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).backgroundColor = UIColor.white
 //        startSearchBar.isTranslucent = true
@@ -73,6 +82,24 @@ class MapViewController: UIViewController {
         
     }
     
+//    func setupSearchControllers(){
+////
+//////        tableDataSource = GMSAutocompleteTableDataSource()
+//////        tableDataSource?.delegate = self
+//////        searchController = UISearchDisplayController(searchBar: startSearchBar, contentsController: self)
+//////        searchController?.searchResultsDataSource = tableDataSource
+//////        searchController?.searchResultsDelegate = tableDataSource
+//////        searchController?.delegate = self
+////        
+//        resultsViewController = GMSAutocompleteResultsViewController()
+//        resultsViewController?.delegate = self
+//
+//        
+//        searchController = UISearchController(searchResultsController: resultsViewController)
+//        searchController?.searchResultsUpdater = resultsViewController
+//        view.addSubview((searchController?.searchBar)!)
+//
+//    }
     func setUpMainBar(){
         searchBarFrame.frame = CGRect(x: 33, y: 70, width: 313, height: 38)
 
@@ -116,15 +143,12 @@ class MapViewController: UIViewController {
     
     func setupTableView(){
         let frameForTableView = CGRect(x: 0, y: 667, width: 375, height: 527)
-        tableView = UITableView(frame: frameForTableView)
-    
+//        tableView = UITableView(frame: frameForTableView)
+        tableView.frame = frameForTableView
         tableViewY = 143
-//        tableView.delegate = self
+        tableView.delegate = self
+        tableView.dataSource = self
         backgroundView.addSubview(tableView)
-        
-
-
-        
         
     }
     
@@ -148,6 +172,37 @@ class MapViewController: UIViewController {
         // Pass the selected object to the new view controller.
     }
     */
+    
+    func didUpdateAutocompletePredictionsForTableDataSource(tableDataSource: GMSAutocompleteTableDataSource) {
+        // Turn the network activity indicator off.
+        UIApplication.shared.isNetworkActivityIndicatorVisible = false
+        // Reload table data.
+//        searchDisplayController?.searchResultsTableView.reloadData()
+    }
+    
+    func didRequestAutocompletePredictionsForTableDataSource(tableDataSource: GMSAutocompleteTableDataSource) {
+        // Turn the network activity indicator on.
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        // Reload table data.
+//        searchDisplayController?.searchResultsTableView.reloadData()
+    }
+
+    func configurePlaceAutoComplete(){
+        
+        let visibleRegion = mapVIew.projection.visibleRegion()
+        let bounds = GMSCoordinateBounds(coordinate: visibleRegion.farLeft, coordinate: visibleRegion.nearRight)
+
+        // Set up the autocomplete filter.
+        let filter = GMSAutocompleteFilter()
+        filter.type = .noFilter
+        
+        // Create the fetcher.
+        fetcher = GMSAutocompleteFetcher(bounds: nil, filter: filter)
+        fetcher?.delegate = self
+        
+        placeClient = GMSPlacesClient()
+        
+    }
 
 }
 extension MapViewController : UISearchBarDelegate{
@@ -163,13 +218,19 @@ extension MapViewController : UISearchBarDelegate{
             self.backButton.isHidden = false
             self.destinationSearchBar.isHidden = false
             self.tableView.frame.origin.y = 143
+//            self.present(self.resultsViewController!, animated: true, completion: nil)
         }
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        searchResults = []
+        fetcher?.sourceTextHasChanged(searchText)
     }
     
 
 
 }
-//extension MapViewController: UITableViewDelegate{
+extension MapViewController: UITableViewDelegate{
 
 //    func scrollViewDidScroll(_ scrollView: UIScrollView) {
 //        if scrollView.contentOffset.y < 0{
@@ -183,10 +244,27 @@ extension MapViewController : UISearchBarDelegate{
 //            })
 //            tableView.frame.origin.y = tableView.frame.origin.y + scrollView.contentOffset.y
 //        }
-
+//
 //    }
+    
+    
 
-//}
+}
+extension MapViewController: UITableViewDataSource{
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return searchResults.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let place = searchResults[indexPath.row]
+        let cell = tableView.dequeueReusableCell(withIdentifier: "searchCell", for: indexPath) as! SearchTableViewCell
+        cell.setAddress(address: place.formattedAddress!)
+        cell.setLocationName(name: place.name)
+        print(place.name)
+        return cell
+    }
+}
 //extension MapViewController: UIGestureRecognizerDelegate{
 //    
 //    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -195,4 +273,69 @@ extension MapViewController : UISearchBarDelegate{
 //    
 //}
 
+extension MapViewController: GMSAutocompleteResultsViewControllerDelegate {
+    
+    func resultsController(_ resultsController: GMSAutocompleteResultsViewController,
+                           didAutocompleteWith place: GMSPlace) {
+        searchController?.isActive = false
+        // Do something with the selected place.
+        print("Place name: ", place.name)
+        print("Place address: ", place.formattedAddress)
+        print("Place attributions: ", place.attributions)
+    }
+    
+    func resultsController(_ resultsController: GMSAutocompleteResultsViewController,
+                           didFailAutocompleteWithError error: Error){
+        // TODO: handle the error.
+        print("Error: ", error.localizedDescription)
+    }
+    
+    // Turn the network activity indicator on and off again.
+    func didRequestAutocompletePredictionsForResultsController(resultsController: GMSAutocompleteResultsViewController) {
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+    }
+    
+    func didUpdateAutocompletePredictionsForResultsController(resultsController: GMSAutocompleteResultsViewController) {
+        UIApplication.shared.isNetworkActivityIndicatorVisible = false
+    }
+    
+    
+}
+extension MapViewController: GMSAutocompleteFetcherDelegate {
+    
+    func didAutocomplete(with predictions: [GMSAutocompletePrediction]) {
+//        let resultsStr = NSMutableString()
+//        print(predictions.count)
+        for prediction in predictions {
+//            placeClient?.lookUpPlaceID(prediction.placeID!, callback: { (place: GMSPlace?, error: Error?) in
+//                
+//                if let error = error {
+//                    print("lookup place id query error: \(error.localizedDescription)")
+//                    return
+//                }
+//                
+//                guard let place = place else {
+//                    print("No place details for \(prediction.placeID)")
+//                    return
+//                }
+//                
+//                self.searchResults.append(place)
+//                print(self.searchResults.count)
+////                print("Place name \(place.name)")
+////                print("Place address \(place.formattedAddress)")
+////                print("Place placeID \(place.placeID)")
+////                print("Place attributions \(place.attributions)")
+//            })
+            print(prediction.attributedFullText)
+//            resultsStr.appendFormat("%@\n", prediction.attributedPrimaryText)
+        }
+        tableView.reloadData()
+        
+//        resultText?.text = resultsStr as String
+    }
+    
+    func didFailAutocompleteWithError(_ error: Error) {
+        print(error.localizedDescription)
+    }
+}
 

@@ -25,7 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 configuration.server = "https://rocky-dawn-71879.herokuapp.com/parse"
             })
         )
-        GMSServices.provideAPIKey("AIzaSyC3DeaKs0Dg4iipA-N2bfu0qJyvkJAtc9g")
+        GMSServices.provideAPIKey("AIzaSyAsVaJd_VbB4lgnW4gpJD8PqZdY2jIRNZk")
         
 //        window = UIWindow(frame: UIScreen.main.bounds)
 //        window?.rootViewController = HomeViewController()
