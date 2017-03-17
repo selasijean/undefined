@@ -15,6 +15,4 @@ class Location: NSObject {
     var coordinates: CLLocationCoordinate2D?
     var parseID : String?
     
-    
-
 }

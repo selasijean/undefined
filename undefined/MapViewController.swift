@@ -9,6 +9,7 @@
 import UIKit
 import GoogleMaps
 import Material
+import Parse
 
 class MapViewController: UIViewController, UISearchDisplayDelegate{
     
@@ -27,11 +28,18 @@ class MapViewController: UIViewController, UISearchDisplayDelegate{
     var searchController: UISearchController?
     
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var locationDetailView: UIView!
+    @IBOutlet weak var locationNameLabel: UILabel!
+    @IBOutlet weak var modeOfTravelImageView: UIImageView!
+    
+    var selectedLocation: GMSPlace?
+    
 //    var tableView: UITableView!
     var tableViewY: CGFloat!
     
     var fetcher: GMSAutocompleteFetcher?
     var placeClient: GMSPlacesClient?
+    var googleMapsPredictions: [GMSAutocompletePrediction] = []
     var searchResults: [GMSPlace] = []
     
     override func viewDidLoad() {
@@ -42,13 +50,57 @@ class MapViewController: UIViewController, UISearchDisplayDelegate{
         setUpBackButton()
         setupTableView()
         configurePlaceAutoComplete()
-//        setupSearchControllers()
+        hideLocationDetailView()
         // Do any additional setup after loading the view.
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    func hideLocationDetailView(){
+        locationDetailView.frame.origin.y = view.height
+    }
+    
+    func showLocationDetailView(){
+        
+        UIView.animate(withDuration: 0.4) {
+            self.tappedBackButton()
+        }
+        UIView.animate(withDuration: 0.6) {
+            self.locationDetailView.frame.origin.y = 296
+            self.searchBarFrame.isHidden = true
+            self.self.mapVIew.addSubview(self.locationDetailView)
+        }
+    }
+    
+    @IBAction func closeLocationDetailView(_ sender: Any) {
+        UIView.animate(withDuration: 0.4) { 
+            self.hideLocationDetailView()
+        }
+        
+    }
+    @IBAction func saveLocation(_ sender: Any) {
+        
+        let location = PFObject(className: "Locations")
+        location["name"] = selectedLocation?.name
+        location["place_id"] = selectedLocation?.placeID
+        let userConnectedDic = NSMutableDictionary()
+        userConnectedDic.setValue("29mins", forKey: "\((PFUser.current()?.objectId)!)")
+        location["usersconnected"] = userConnectedDic
+        location.saveInBackground { (success: Bool, error: Error?) in
+            if success{
+                print("sucessful")
+                self.dismissView(sender)
+            }
+        }
+        let locationInfoUser = NSMutableDictionary()
+        locationInfoUser.setValue("\((selectedLocation?.placeID)!)", forKey: "\((selectedLocation?.name)!)")
+        locationInfoUser.setValue("\((selectedLocation?.formattedAddress)!)", forKey: "address")
+        locationInfoUser.setValue("\((selectedLocation?.coordinate)!)", forKey: "coords")
+        PFUser.current()?.setObject(locationInfoUser, forKey: "locations")
+        PFUser.current()?.saveInBackground()
     }
     
     func setupSearchBars(){
@@ -70,10 +122,6 @@ class MapViewController: UIViewController, UISearchDisplayDelegate{
         startSearchBar.borderColor = UIColor.clear
         startSearchBar.backgroundImage = UIImage()
         startSearchBar.delegate = self
-
-//        startSearchBar.searchBarStyle = .minimal
-//        UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).backgroundColor = UIColor.white
-//        startSearchBar.isTranslucent = true
         searchBarFrame.addSubview(startSearchBar)
         searchBarFrame.addSubview(destinationSearchBar)
         
@@ -81,25 +129,7 @@ class MapViewController: UIViewController, UISearchDisplayDelegate{
         
         
     }
-    
-//    func setupSearchControllers(){
-////
-//////        tableDataSource = GMSAutocompleteTableDataSource()
-//////        tableDataSource?.delegate = self
-//////        searchController = UISearchDisplayController(searchBar: startSearchBar, contentsController: self)
-//////        searchController?.searchResultsDataSource = tableDataSource
-//////        searchController?.searchResultsDelegate = tableDataSource
-//////        searchController?.delegate = self
-////        
-//        resultsViewController = GMSAutocompleteResultsViewController()
-//        resultsViewController?.delegate = self
-//
-//        
-//        searchController = UISearchController(searchResultsController: resultsViewController)
-//        searchController?.searchResultsUpdater = resultsViewController
-//        view.addSubview((searchController?.searchBar)!)
-//
-//    }
+
     func setUpMainBar(){
         searchBarFrame.frame = CGRect(x: 33, y: 70, width: 313, height: 38)
 
@@ -146,8 +176,8 @@ class MapViewController: UIViewController, UISearchDisplayDelegate{
 //        tableView = UITableView(frame: frameForTableView)
         tableView.frame = frameForTableView
         tableViewY = 143
-        tableView.delegate = self
         tableView.dataSource = self
+        tableView.delegate = self
         backgroundView.addSubview(tableView)
         
     }
@@ -155,14 +185,7 @@ class MapViewController: UIViewController, UISearchDisplayDelegate{
     @IBAction func dismissView(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
-//    func didPan(sender: UIPanGestureRecognizer){
-//        let velocity = sender.velocity(in: tableView)
-//        if velocity.y > 20 {
-//            UIView.animate(withDuration: 0.20, animations: { 
-//                self.tableView.frame.origin.y = self.tableViewY + sender.translation(in: self.tableView).y
-//            })
-//        }
-//    }
+
     /*
     // MARK: - Navigation
 
@@ -214,42 +237,29 @@ extension MapViewController : UISearchBarDelegate{
             self.startSearchBar.frame = CGRect(x: 43, y: 83, width: 308, height: 33)
             self.destinationSearchBar.frame = CGRect(x: 43, y: 33, width: 308, height: 33)
             self.startSearchBar.barTintColor = UIColor.red
-//            UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).backgroundColor = UIColor.red
             self.backButton.isHidden = false
             self.destinationSearchBar.isHidden = false
             self.tableView.frame.origin.y = 143
-//            self.present(self.resultsViewController!, animated: true, completion: nil)
         }
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         searchResults = []
+        googleMapsPredictions = []
         fetcher?.sourceTextHasChanged(searchText)
     }
     
-
-
 }
 extension MapViewController: UITableViewDelegate{
-
-//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        if scrollView.contentOffset.y < 0{
-//                let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(didPan(sender:)))
-//                panGestureRecognizer.delegate = self
-//                tableView.addGestureRecognizer(panGestureRecognizer)
-//            print("selasi")
-//            UIView.animate(withDuration: 0.1, animations: {
-//                self.tableView.frame.origin.y = self.tableViewY + scrollView.contentOffset.y
-//                print(self.tableView.frame.origin.y)
-//            })
-//            tableView.frame.origin.y = tableView.frame.origin.y + scrollView.contentOffset.y
-//        }
-//
-//    }
     
-    
-
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let location = searchResults[indexPath.row]
+        selectedLocation = location
+        locationNameLabel.text = location.name
+        showLocationDetailView()
+    }
 }
+
 extension MapViewController: UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -265,23 +275,12 @@ extension MapViewController: UITableViewDataSource{
         return cell
     }
 }
-//extension MapViewController: UIGestureRecognizerDelegate{
-//    
-//    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-//        return true
-//    }
-//    
-//}
 
 extension MapViewController: GMSAutocompleteResultsViewControllerDelegate {
     
     func resultsController(_ resultsController: GMSAutocompleteResultsViewController,
                            didAutocompleteWith place: GMSPlace) {
         searchController?.isActive = false
-        // Do something with the selected place.
-        print("Place name: ", place.name)
-        print("Place address: ", place.formattedAddress)
-        print("Place attributions: ", place.attributions)
     }
     
     func resultsController(_ resultsController: GMSAutocompleteResultsViewController,
@@ -304,34 +303,27 @@ extension MapViewController: GMSAutocompleteResultsViewControllerDelegate {
 extension MapViewController: GMSAutocompleteFetcherDelegate {
     
     func didAutocomplete(with predictions: [GMSAutocompletePrediction]) {
-//        let resultsStr = NSMutableString()
-//        print(predictions.count)
+
         for prediction in predictions {
-//            placeClient?.lookUpPlaceID(prediction.placeID!, callback: { (place: GMSPlace?, error: Error?) in
-//                
-//                if let error = error {
-//                    print("lookup place id query error: \(error.localizedDescription)")
-//                    return
-//                }
-//                
-//                guard let place = place else {
-//                    print("No place details for \(prediction.placeID)")
-//                    return
-//                }
-//                
-//                self.searchResults.append(place)
-//                print(self.searchResults.count)
-////                print("Place name \(place.name)")
-////                print("Place address \(place.formattedAddress)")
-////                print("Place placeID \(place.placeID)")
-////                print("Place attributions \(place.attributions)")
-//            })
-            print(prediction.attributedFullText)
-//            resultsStr.appendFormat("%@\n", prediction.attributedPrimaryText)
+            placeClient?.lookUpPlaceID(prediction.placeID!, callback: { (place: GMSPlace?, error: Error?) in
+                
+                if let error = error {
+                    print("lookup place id query error: \(error.localizedDescription)")
+                    return
+                }
+                
+                guard let place = place else {
+                    print("No place details for \(prediction.placeID)")
+                    return
+                }
+                
+                self.searchResults.append(place)
+                print(self.searchResults.count)
+                self.tableView.reloadData()
+
+            })
+
         }
-        tableView.reloadData()
-        
-//        resultText?.text = resultsStr as String
     }
     
     func didFailAutocompleteWithError(_ error: Error) {
