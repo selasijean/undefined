@@ -36,7 +36,6 @@ class LoginViewController: UIViewController {
         if (!(usernameField.text?.isEmpty)! && !(passwordField.text?.isEmpty)!){
             PFUser.logInWithUsername(inBackground: usernameField.text!, password: passwordField.text!, block: { (user:PFUser?, error:Error?) in
                 if user != nil{
-                    print("successful login")
                     self.present(self.navigationVC, animated: true, completion: nil)
                 }
             })

@@ -25,7 +25,7 @@
 		35C4655C1E4A9F0600028400 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C4655B1E4A9F0600028400 /* MapViewController.swift */; };
 		35C465601E4B07E400028400 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C4655F1E4B07E400028400 /* SignUpViewController.swift */; };
 		35DA09681E7B3E4F00309A4A /* SearchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DA09671E7B3E4F00309A4A /* SearchTableViewCell.swift */; };
-		35DA096A1E7C474900309A4A /* NetworkRequestFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DA09691E7C474900309A4A /* NetworkRequestFunctions.swift */; };
+		35DA096A1E7C474900309A4A /* DataRequester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DA09691E7C474900309A4A /* DataRequester.swift */; };
 		35F156BB1E56F7B600652B4C /* LocationsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35F156BA1E56F7B600652B4C /* LocationsTableViewCell.swift */; };
 		35F80F811E77574000B579B6 /* LocationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35F80F801E77574000B579B6 /* LocationTableViewCell.swift */; };
 		51A0896D8104EEBE0AE63CC3 /* Pods_undefined.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CAACDB5CB5402196EADBEF0 /* Pods_undefined.framework */; };
@@ -77,7 +77,7 @@
 		35C4655B1E4A9F0600028400 /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		35C4655F1E4B07E400028400 /* SignUpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		35DA09671E7B3E4F00309A4A /* SearchTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchTableViewCell.swift; sourceTree = "<group>"; };
-		35DA09691E7C474900309A4A /* NetworkRequestFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkRequestFunctions.swift; sourceTree = "<group>"; };
+		35DA09691E7C474900309A4A /* DataRequester.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataRequester.swift; sourceTree = "<group>"; };
 		35F156BA1E56F7B600652B4C /* LocationsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationsTableViewCell.swift; sourceTree = "<group>"; };
 		35F80F801E77574000B579B6 /* LocationTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationTableViewCell.swift; sourceTree = "<group>"; };
 		3FAC2DF99A7C34CD3E7FFA11 /* Pods-undefined.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-undefined.release.xcconfig"; path = "Pods/Target Support Files/Pods-undefined/Pods-undefined.release.xcconfig"; sourceTree = "<group>"; };
@@ -180,7 +180,7 @@
 				350298561E4BF9D90095B8BA /* Location.swift */,
 				350298581E4BF9EA0095B8BA /* Reminder.swift */,
 				35DA09671E7B3E4F00309A4A /* SearchTableViewCell.swift */,
-				35DA09691E7C474900309A4A /* NetworkRequestFunctions.swift */,
+				35DA09691E7C474900309A4A /* DataRequester.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -514,7 +514,7 @@
 				355441711E77623000C13B77 /* MainViewController.swift in Sources */,
 				350298531E4BF98B0095B8BA /* CreateReminderViewController.swift in Sources */,
 				35C465581E471CD900028400 /* LoginViewController.swift in Sources */,
-				35DA096A1E7C474900309A4A /* NetworkRequestFunctions.swift in Sources */,
+				35DA096A1E7C474900309A4A /* DataRequester.swift in Sources */,
 				35C4652C1E471CAE00028400 /* MenuViewController.swift in Sources */,
 				350298571E4BF9D90095B8BA /* Location.swift in Sources */,
 				35F156BB1E56F7B600652B4C /* LocationsTableViewCell.swift in Sources */,

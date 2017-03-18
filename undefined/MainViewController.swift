@@ -8,30 +8,30 @@
 
 import UIKit
 import Parse
-struct userDestination {
-    var name: String
-    var eta : String
-    
-    init(destinationName: String, etaToDes: String){
-        name = destinationName
-        eta = etaToDes
-    }
-}
+
 
 class MainViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
-    var locations: [userDestination] = []
     var userLocations: [Location] = []
+    var currentLocation: CLLocation?
+    
+    let locationManager = CLLocationManager()
+    
+    var refreshControl: UIRefreshControl!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
 
         setupFooterView()
-        populateLocationsArray()
         pullCurrentUserLocations()
-//        NetworkRequestFunctions.getETA()
+        
+        locationManager.delegate = self
+        locationManager.requestWhenInUseAuthorization()
+        
+        setupRefreshControl()
+        
         
     }
 
@@ -68,30 +68,6 @@ class MainViewController: UIViewController {
         self.present(destVC!, animated: true, completion: nil)
         
     }
-
-
-    func populateLocationsArray(){
-        let location1 = userDestination(destinationName: "mudd", etaToDes: "50mins")
-        let location2 = userDestination(destinationName: "pomona", etaToDes: "20mins")
-        let location3 = userDestination(destinationName: "gym", etaToDes: "10mins")
-        let location4 = userDestination(destinationName: "mudd", etaToDes: "50mins")
-        let location5 = userDestination(destinationName: "pomona", etaToDes: "20mins")
-        let location6 = userDestination(destinationName: "gym", etaToDes: "10mins")
-        let location7 = userDestination(destinationName: "mudd", etaToDes: "50mins")
-        let location8 = userDestination(destinationName: "pomona", etaToDes: "20mins")
-        let location9 = userDestination(destinationName: "gym", etaToDes: "10mins")
-        let location10 = userDestination(destinationName: "gym", etaToDes: "10mins")
-        locations.append(location1)
-        locations.append(location2)
-        locations.append(location3)
-        locations.append(location4)
-        locations.append(location5)
-        locations.append(location6)
-        locations.append(location7)
-        locations.append(location8)
-        locations.append(location9)
-        locations.append(location10)
-    }
     
     func pullCurrentUserLocations(){
         
@@ -115,15 +91,33 @@ class MainViewController: UIViewController {
             }
         }
     }
+    
+    func setupRefreshControl(){
+        
+        refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(onRefresh), for: .valueChanged)
+        tableView.insertSubview(refreshControl, at: 0)
+    }
+    
+    func onRefresh() {
+        run(after: 2) {
+//            self.tableView.reloadData()
+            self.tableView.setNeedsLayout()
+//            self.userLocations = []
+//            self.pullCurrentUserLocations()
+//            self.tableView.layoutSubviews()
+            self.refreshControl.endRefreshing()
+        }
+    }
+    
+    func run(after wait: TimeInterval, closure: @escaping () -> Void) {
+        let queue = DispatchQueue.main
+        queue.asyncAfter(deadline: DispatchTime.now() + wait, execute: closure)
+    }
+
 
 }
 extension MainViewController: UITableViewDelegate{
-    
-    
-//    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-//        
-//        return 50
-//    }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
@@ -138,18 +132,18 @@ extension MainViewController: UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return userLocations.count
-//        return locations.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
+        let fetcher = DataRequester()
         let cell = tableView.dequeueReusableCell(withIdentifier: "locationCell", for: indexPath) as! LocationTableViewCell
+        fetcher.cell = cell
         let info = userLocations[indexPath.row]
-//        let info = locations[indexPath.row]
-        
         cell.setLocation(text: info.name!)
-        cell.setETA(text: "20mins")
-//        cell.setETA(text: info.eta)
+        if currentLocation?.coordinate != nil{
+            fetcher.getETA(destination: info, currentLocationCoords: (currentLocation?.coordinate)!)
+        }
         return cell
         
     }
@@ -167,4 +161,23 @@ extension MainViewController: UITableViewDataSource{
 //        footerView.isUserInteractionEnabled = true
 //        return footerView
 //    }
+}
+
+extension MainViewController: CLLocationManagerDelegate {
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+
+        if let location = locations.first {
+            currentLocation = location
+            locationManager.stopUpdatingLocation()
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        
+        if status == .authorizedWhenInUse {
+            locationManager.startUpdatingLocation()
+        }
+    }
+    
 }

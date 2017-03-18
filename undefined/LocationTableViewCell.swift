@@ -30,6 +30,9 @@ class LocationTableViewCell: UITableViewCell {
     
     func setETA(text: String){
         etaLabel.text = text
+        self.setNeedsLayout()
+//        self.layoutSubviews()
     }
+    
 
 }

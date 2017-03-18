@@ -38,7 +38,6 @@ class MapViewController: UIViewController, UISearchDisplayDelegate{
     
     var selectedLocation: GMSPlace?
     
-//    var tableView: UITableView!
     var tableViewY: CGFloat!
     
     var fetcher: GMSAutocompleteFetcher?
@@ -57,6 +56,7 @@ class MapViewController: UIViewController, UISearchDisplayDelegate{
         hideLocationDetailView()
         
         locationManager.delegate = self
+        locationManager.requestWhenInUseAuthorization()
     }
 
     override func didReceiveMemoryWarning() {
@@ -83,6 +83,8 @@ class MapViewController: UIViewController, UISearchDisplayDelegate{
     @IBAction func closeLocationDetailView(_ sender: Any) {
         UIView.animate(withDuration: 0.4) { 
             self.hideLocationDetailView()
+            self.searchBarFrame.isHidden = false
+            self.searchBarCancelButtonClicked(self.startSearchBar)
         }
         
     }
@@ -182,7 +184,7 @@ class MapViewController: UIViewController, UISearchDisplayDelegate{
             self.searchBarFrame.backgroundColor = UIColor.white
             self.backButton.isHidden = true
             self.destinationSearchBar.isHidden = true
-            self.startSearchBar.resignFirstResponder()
+            self.searchBarCancelButtonClicked(self.startSearchBar)
             self.tableView.frame.origin.y = 667
             
         }
@@ -196,7 +198,6 @@ class MapViewController: UIViewController, UISearchDisplayDelegate{
     
     func setupTableView(){
         let frameForTableView = CGRect(x: 0, y: 667, width: 375, height: 527)
-//        tableView = UITableView(frame: frameForTableView)
         tableView.frame = frameForTableView
         tableViewY = 143
         tableView.dataSource = self
@@ -272,6 +273,13 @@ extension MapViewController : UISearchBarDelegate{
         fetcher?.sourceTextHasChanged(searchText)
     }
     
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        startSearchBar.text = ""
+        googleMapsPredictions = []
+        searchResults = []
+        startSearchBar.resignFirstResponder()
+    }
+    
 }
 extension MapViewController: UITableViewDelegate{
     
@@ -294,7 +302,6 @@ extension MapViewController: UITableViewDataSource{
         let cell = tableView.dequeueReusableCell(withIdentifier: "searchCell", for: indexPath) as! SearchTableViewCell
         cell.setAddress(address: place.formattedAddress!)
         cell.setLocationName(name: place.name)
-        print(place.name)
         return cell
     }
 }

@@ -15,7 +15,6 @@ class Location: NSObject {
         didSet{
             name = parseObject["name"] as? String
             placeID = parseObject["place_id"] as? String
-//            currentUserLocations = parseObject["locations"] as? [[String: String]]
             usersConnectedWithETA = parseObject["usersconnected"] as? [String: String]
         }
     }
@@ -24,7 +23,6 @@ class Location: NSObject {
     var name: String?
     var address: String?
     var placeID: String?
-//    var currentUserLocations: [[String: String]]?
     
     init(pfObject: PFObject){
         super.init()
