@@ -8,11 +8,27 @@
 
 import UIKit
 import GoogleMaps
-
+import Parse
 class Location: NSObject {
     
+    var parseObject: PFObject!{
+        didSet{
+            name = parseObject["name"] as? String
+            placeID = parseObject["place_id"] as? String
+//            currentUserLocations = parseObject["locations"] as? [[String: String]]
+            usersConnectedWithETA = parseObject["usersconnected"] as? [String: String]
+        }
+    }
     var usersConnectedWithETA: [String : String]?
     var coordinates: CLLocationCoordinate2D?
-    var parseID : String?
+    var name: String?
+    var address: String?
+    var placeID: String?
+//    var currentUserLocations: [[String: String]]?
+    
+    init(pfObject: PFObject){
+        super.init()
+        ({self.parseObject = pfObject})()
+    }
     
 }

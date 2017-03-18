@@ -22,9 +22,9 @@ class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setUpHomeVC()
-        setupMenuVC()
-        setUpNavigationDrawerVC()
+//        setUpHomeVC()
+//        setupMenuVC()
+//        setUpNavigationDrawerVC()
         addNotificationObservers()
         changeTextFieldProperties()
 
@@ -64,6 +64,9 @@ class LoginViewController: UIViewController {
     }
     
     @IBAction func loginButtonClicked(_ sender: Any) {
+        setUpHomeVC()
+        setupMenuVC()
+        setUpNavigationDrawerVC()
         performLogin()
     }
     

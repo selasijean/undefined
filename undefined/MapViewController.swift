@@ -13,11 +13,15 @@ import Parse
 
 class MapViewController: UIViewController, UISearchDisplayDelegate{
     
+    var parentVC: MainViewController?
     var frameForSearchBarsSuperView: CGRect = CGRect(x: 0, y: 0, width: 375, height: 142)
     var frameForStartSearchBar: CGRect!
     var frameForDestinationSearchBar: CGRect!
     var backButton: UIButton!
+    
     var mapVIew: GMSMapView!
+    let locationManager = CLLocationManager()
+    
     var startSearchBar: UISearchBar!
     var destinationSearchBar: UISearchBar!
     
@@ -51,7 +55,8 @@ class MapViewController: UIViewController, UISearchDisplayDelegate{
         setupTableView()
         configurePlaceAutoComplete()
         hideLocationDetailView()
-        // Do any additional setup after loading the view.
+        
+        locationManager.delegate = self
     }
 
     override func didReceiveMemoryWarning() {
@@ -85,22 +90,40 @@ class MapViewController: UIViewController, UISearchDisplayDelegate{
         
         let location = PFObject(className: "Locations")
         location["name"] = selectedLocation?.name
-        location["place_id"] = selectedLocation?.placeID
+        location["place_id"] = (selectedLocation?.placeID)!
+        
         let userConnectedDic = NSMutableDictionary()
         userConnectedDic.setValue("29mins", forKey: "\((PFUser.current()?.objectId)!)")
         location["usersconnected"] = userConnectedDic
-        location.saveInBackground { (success: Bool, error: Error?) in
-            if success{
-                print("sucessful")
-                self.dismissView(sender)
-            }
-        }
+       
         let locationInfoUser = NSMutableDictionary()
-        locationInfoUser.setValue("\((selectedLocation?.placeID)!)", forKey: "\((selectedLocation?.name)!)")
+//        locationInfoUser.setValue("\((selectedLocation?.placeID)!)", forKey: "placeID")
+        locationInfoUser.setValue("\((selectedLocation?.name)!)", forKey: "name")
         locationInfoUser.setValue("\((selectedLocation?.formattedAddress)!)", forKey: "address")
         locationInfoUser.setValue("\((selectedLocation?.coordinate)!)", forKey: "coords")
-        PFUser.current()?.setObject(locationInfoUser, forKey: "locations")
-        PFUser.current()?.saveInBackground()
+        
+        
+        
+        location.saveInBackground { (success: Bool, error: Error?) in
+            if success{
+                self.dismissView(sender)
+                if var newlocInfo = PFUser.current()?.object(forKey: "locations") as? [NSMutableDictionary]{
+                    newlocInfo.append(locationInfoUser)
+                    PFUser.current()?.setObject(newlocInfo, forKey: "locations")
+                }else{
+                    PFUser.current()?.setObject(NSArray(array: [locationInfoUser]), forKey: "locations")
+                }
+                locationInfoUser.setValue("\((location.objectId)!)", forKey: "parse_id")
+                PFUser.current()?.saveInBackground(block: { (success:Bool, error:Error?) in
+                    if success{
+                        self.parentVC?.userLocations = []
+                        self.parentVC?.pullCurrentUserLocations()
+                    }
+                })
+                
+            }
+        }
+        
     }
     
     func setupSearchBars(){
@@ -220,7 +243,7 @@ class MapViewController: UIViewController, UISearchDisplayDelegate{
         filter.type = .noFilter
         
         // Create the fetcher.
-        fetcher = GMSAutocompleteFetcher(bounds: nil, filter: filter)
+        fetcher = GMSAutocompleteFetcher(bounds: bounds, filter: filter)
         fetcher?.delegate = self
         
         placeClient = GMSPlacesClient()
@@ -285,11 +308,10 @@ extension MapViewController: GMSAutocompleteResultsViewControllerDelegate {
     
     func resultsController(_ resultsController: GMSAutocompleteResultsViewController,
                            didFailAutocompleteWithError error: Error){
-        // TODO: handle the error.
+        
         print("Error: ", error.localizedDescription)
     }
     
-    // Turn the network activity indicator on and off again.
     func didRequestAutocompletePredictionsForResultsController(resultsController: GMSAutocompleteResultsViewController) {
         UIApplication.shared.isNetworkActivityIndicatorVisible = true
     }
@@ -318,7 +340,6 @@ extension MapViewController: GMSAutocompleteFetcherDelegate {
                 }
                 
                 self.searchResults.append(place)
-                print(self.searchResults.count)
                 self.tableView.reloadData()
 
             })
@@ -329,5 +350,26 @@ extension MapViewController: GMSAutocompleteFetcherDelegate {
     func didFailAutocompleteWithError(_ error: Error) {
         print(error.localizedDescription)
     }
+}
+
+extension MapViewController: CLLocationManagerDelegate {
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
+        if let location = locations.first {
+            mapVIew.camera = GMSCameraPosition(target: location.coordinate, zoom: 15, bearing: 0, viewingAngle: 0)
+            locationManager.stopUpdatingLocation()
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        
+        if status == .authorizedWhenInUse {
+            locationManager.startUpdatingLocation()
+            mapVIew.isMyLocationEnabled = true
+            mapVIew.settings.myLocationButton = true
+        }
+    }
+
 }
 

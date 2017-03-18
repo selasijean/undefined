@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import Parse
 struct userDestination {
     var name: String
     var eta : String
@@ -22,6 +22,7 @@ class MainViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
     var locations: [userDestination] = []
+    var userLocations: [Location] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,6 +30,8 @@ class MainViewController: UIViewController {
 
         setupFooterView()
         populateLocationsArray()
+        pullCurrentUserLocations()
+//        NetworkRequestFunctions.getETA()
         
     }
 
@@ -60,8 +63,8 @@ class MainViewController: UIViewController {
     }
     
     func addLocationButtonSelected(){
-        print("selasi")
-        let destVC = self.storyboard?.instantiateViewController(withIdentifier: "mapView")
+        let destVC = self.storyboard?.instantiateViewController(withIdentifier: "mapView") as? MapViewController
+        destVC?.parentVC = self
         self.present(destVC!, animated: true, completion: nil)
         
     }
@@ -90,6 +93,28 @@ class MainViewController: UIViewController {
         locations.append(location10)
     }
     
+    func pullCurrentUserLocations(){
+        
+        let arrayLocations = PFUser.current()?.object(forKey: "locations") as? [[String: String]]
+        if let locDict = arrayLocations{
+            for dict in locDict{
+                if let index = dict.index(forKey: "parse_id"){
+                    let query = PFQuery(className: "Locations")
+                    query.whereKey("objectId", equalTo: dict[index].value)
+                    query.findObjectsInBackground(block: { (results: [PFObject]?, error: Error?) in
+                        
+                        let pfObject = results?[0]
+                        
+                        if let object = pfObject{
+                            let location = Location(pfObject: object)
+                            self.userLocations.append(location)
+                            self.tableView.reloadData()
+                        }
+                    })
+                }
+            }
+        }
+    }
 
 }
 extension MainViewController: UITableViewDelegate{
@@ -112,17 +137,19 @@ extension MainViewController: UITableViewDelegate{
 extension MainViewController: UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return locations.count
+        return userLocations.count
+//        return locations.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "locationCell", for: indexPath) as! LocationTableViewCell
+        let info = userLocations[indexPath.row]
+//        let info = locations[indexPath.row]
         
-        let info = locations[indexPath.row]
-        
-        cell.setLocation(text: info.name)
-        cell.setETA(text: info.eta)
+        cell.setLocation(text: info.name!)
+        cell.setETA(text: "20mins")
+//        cell.setETA(text: info.eta)
         return cell
         
     }
