@@ -35,11 +35,9 @@ class DataRequester: NSObject {
                         let json = try? JSONSerialization.jsonObject(with: usableData, options: []) as! NSDictionary
                         let rows = json!["rows"] as? [NSDictionary]
                         if let first = rows?.first{
-                            print(first)
                             let firstElement = first["elements"] as? [NSDictionary]
                             if let duration = firstElement?.first!["duration"] as? NSDictionary{
                                 if let eta = duration["text"] as? String{
-
                                     self.cell?.setETA(text: eta)
                                     self.cell?.setNeedsLayout()
                                     self.tableView?.reloadData()

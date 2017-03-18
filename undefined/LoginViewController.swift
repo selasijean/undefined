@@ -22,9 +22,6 @@ class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        setUpHomeVC()
-//        setupMenuVC()
-//        setUpNavigationDrawerVC()
         addNotificationObservers()
         changeTextFieldProperties()
 

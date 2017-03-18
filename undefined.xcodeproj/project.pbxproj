@@ -21,7 +21,6 @@
 		35C4653F1E471CAE00028400 /* undefinedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C4653E1E471CAE00028400 /* undefinedTests.swift */; };
 		35C4654A1E471CAE00028400 /* undefinedUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C465491E471CAE00028400 /* undefinedUITests.swift */; };
 		35C465581E471CD900028400 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C465571E471CD900028400 /* LoginViewController.swift */; };
-		35C4655A1E48581700028400 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C465591E48581700028400 /* HomeViewController.swift */; };
 		35C4655C1E4A9F0600028400 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C4655B1E4A9F0600028400 /* MapViewController.swift */; };
 		35C465601E4B07E400028400 /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C4655F1E4B07E400028400 /* SignUpViewController.swift */; };
 		35DA09681E7B3E4F00309A4A /* SearchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35DA09671E7B3E4F00309A4A /* SearchTableViewCell.swift */; };
@@ -73,7 +72,6 @@
 		35C465491E471CAE00028400 /* undefinedUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = undefinedUITests.swift; sourceTree = "<group>"; };
 		35C4654B1E471CAE00028400 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		35C465571E471CD900028400 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
-		35C465591E48581700028400 /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		35C4655B1E4A9F0600028400 /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		35C4655F1E4B07E400028400 /* SignUpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		35DA09671E7B3E4F00309A4A /* SearchTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchTableViewCell.swift; sourceTree = "<group>"; };
@@ -191,7 +189,6 @@
 				35C4655B1E4A9F0600028400 /* MapViewController.swift */,
 				35778FC01E79DC56007FB73A /* DetailViewController.swift */,
 				35C4652B1E471CAE00028400 /* MenuViewController.swift */,
-				35C465591E48581700028400 /* HomeViewController.swift */,
 				355441701E77623000C13B77 /* MainViewController.swift */,
 				35C465571E471CD900028400 /* LoginViewController.swift */,
 				35C4655F1E4B07E400028400 /* SignUpViewController.swift */,
@@ -523,7 +520,6 @@
 				35DA09681E7B3E4F00309A4A /* SearchTableViewCell.swift in Sources */,
 				35C4652A1E471CAE00028400 /* AppDelegate.swift in Sources */,
 				35C4655C1E4A9F0600028400 /* MapViewController.swift in Sources */,
-				35C4655A1E48581700028400 /* HomeViewController.swift in Sources */,
 				350298591E4BF9EA0095B8BA /* Reminder.swift in Sources */,
 				35778FC11E79DC56007FB73A /* DetailViewController.swift in Sources */,
 			);

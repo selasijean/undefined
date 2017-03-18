@@ -103,8 +103,11 @@ class MainViewController: UIViewController {
         run(after: 2) {
 //            self.tableView.reloadData()
             self.tableView.setNeedsLayout()
-//            self.userLocations = []
-//            self.pullCurrentUserLocations()
+            UIView.animate(withDuration: 0.7, animations: { 
+                self.userLocations = []
+                self.pullCurrentUserLocations()
+            })
+            
 //            self.tableView.layoutSubviews()
             self.refreshControl.endRefreshing()
         }
@@ -147,20 +150,7 @@ extension MainViewController: UITableViewDataSource{
         return cell
         
     }
-    
-//    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-//        
-//        let footerView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 50))
-//        footerView.backgroundColor = UIColor.black
-//        
-//        let addButton = UIButton(frame: footerView.frame)
-//
-//        addButton.setTitle("Add Location", for: .normal)
-//        addButton.addTarget(self, action: #selector(addLocationButtonSelected), for: UIControlEvents.touchUpInside)
-//        footerView.addSubview(addButton)
-//        footerView.isUserInteractionEnabled = true
-//        return footerView
-//    }
+
 }
 
 extension MainViewController: CLLocationManagerDelegate {

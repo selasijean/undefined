@@ -9,6 +9,7 @@
 import UIKit
 import Parse
 import GoogleMaps
+import Material
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -27,9 +28,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         )
         GMSServices.provideAPIKey("AIzaSyAsVaJd_VbB4lgnW4gpJD8PqZdY2jIRNZk")
         
-//        window = UIWindow(frame: UIScreen.main.bounds)
-//        window?.rootViewController = HomeViewController()
-//        window?.makeKeyAndVisible()
+        if PFUser.current() != nil{
+            
+            let storyboard = window?.rootViewController?.storyboard
+            let homeVC = storyboard?.instantiateViewController(withIdentifier: "homepage")
+            let menuVC = MenuViewController()
+            let navigationVC = NavigationDrawerController(rootViewController: homeVC!, leftViewController: menuVC, rightViewController: nil)
+            window?.rootViewController = navigationVC
+        }
+        
         return true
     }
 
