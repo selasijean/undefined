@@ -8,7 +8,7 @@
 
 import UIKit
 import Parse
-
+import Material
 
 class MainViewController: UIViewController {
 
@@ -41,9 +41,12 @@ class MainViewController: UIViewController {
     }
     
     func setupTableView(){
+//        view.window?.isOpaque = false
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.backgroundColor = UIColor.white
+        tableView.backgroundColor = Color.clear
+        tableView.layer.cornerRadius = 20
+        tableView.layer.masksToBounds = true
 //        tableView.tableFooterView?.isUserInteractionEnabled = true
     
         
@@ -70,7 +73,6 @@ class MainViewController: UIViewController {
     }
     
     func pullCurrentUserLocations(){
-        
         let arrayLocations = PFUser.current()?.object(forKey: "locations") as? [[String: String]]
         if let locDict = arrayLocations{
             for dict in locDict{
@@ -142,11 +144,15 @@ extension MainViewController: UITableViewDataSource{
         let fetcher = DataRequester()
         let cell = tableView.dequeueReusableCell(withIdentifier: "locationCell", for: indexPath) as! LocationTableViewCell
         fetcher.cell = cell
+        
         let info = userLocations[indexPath.row]
         cell.setLocation(text: info.name!)
         if currentLocation?.coordinate != nil{
             fetcher.getETA(destination: info, currentLocationCoords: (currentLocation?.coordinate)!)
         }
+//        cell.layer.cornerRadius = 10
+////        cell.borderColor = Color.grey.darken1
+//        cell.borderWidth = 1
         return cell
         
     }

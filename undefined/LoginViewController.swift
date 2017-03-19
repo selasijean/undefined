@@ -16,7 +16,7 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var usernameField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
     var navigationVC: NavigationDrawerController!
-    var homeVC: UIViewController!
+    var homeVC: MainViewController!
     var menuVC: MenuViewController!
     var keyboardAppeared: Bool = false
     
@@ -33,6 +33,7 @@ class LoginViewController: UIViewController {
         if (!(usernameField.text?.isEmpty)! && !(passwordField.text?.isEmpty)!){
             PFUser.logInWithUsername(inBackground: usernameField.text!, password: passwordField.text!, block: { (user:PFUser?, error:Error?) in
                 if user != nil{
+                    self.homeVC.pullCurrentUserLocations()
                     self.present(self.navigationVC, animated: true, completion: nil)
                 }
             })
@@ -51,7 +52,7 @@ class LoginViewController: UIViewController {
     }
     
     func setUpHomeVC(){
-        homeVC = self.storyboard?.instantiateViewController(withIdentifier: "homepage")
+        homeVC = self.storyboard?.instantiateViewController(withIdentifier: "homepage") as! MainViewController
     }
     
     func setUpNavigationDrawerVC(){

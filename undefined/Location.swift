@@ -15,10 +15,13 @@ class Location: NSObject {
         didSet{
             name = parseObject["name"] as? String
             placeID = parseObject["place_id"] as? String
-            usersConnectedWithETA = parseObject["usersconnected"] as? [String: String]
+            if let usersCon = parseObject["usersconnected"] as? [String: [String]]{
+                usersConnectedWithETA = usersCon
+            }
+//            usersConnectedWithETA = parseObject["usersconnected"] as? [String: [String]]
         }
     }
-    var usersConnectedWithETA: [String : String]?
+    var usersConnectedWithETA: [String : [String]] = [:]
     var coordinates: CLLocationCoordinate2D?
     var name: String?
     var address: String?

@@ -8,6 +8,7 @@
 
 import UIKit
 import GoogleMaps
+import Parse
 
 class DataRequester: NSObject {
     
@@ -37,10 +38,20 @@ class DataRequester: NSObject {
                         if let first = rows?.first{
                             let firstElement = first["elements"] as? [NSDictionary]
                             if let duration = firstElement?.first!["duration"] as? NSDictionary{
-                                if let eta = duration["text"] as? String{
-                                    self.cell?.setETA(text: eta)
-                                    self.cell?.setNeedsLayout()
-                                    self.tableView?.reloadData()
+                                if let etaText = duration["text"] as? String{
+                                    var connectedUsers = destination.usersConnectedWithETA
+                                    let currentUserID = PFUser.current()?.objectId
+                                    if let secs = duration["value"] as? Int{
+                                        let etaInSecs = "\(secs)"
+                                        let etaData = [etaInSecs, etaText]
+                                        connectedUsers[currentUserID!] = etaData
+                                        destination.parseObject["usersconnected"] = connectedUsers
+                                        self.cell?.setETA(text: etaText)
+                                        destination.parseObject.saveInBackground()
+                                        self.cell?.setNeedsLayout()
+                                        self.tableView?.reloadData()
+                                    }
+
                                 }
                             }
 

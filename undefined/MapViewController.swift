@@ -95,7 +95,8 @@ class MapViewController: UIViewController, UISearchDisplayDelegate{
         location["place_id"] = (selectedLocation?.placeID)!
         
         let userConnectedDic = NSMutableDictionary()
-        userConnectedDic.setValue("29mins", forKey: "\((PFUser.current()?.objectId)!)")
+//        let etaData = ["etaInSeconds" : ]
+//        userConnectedDic.setValue("29mins", forKey: "\((PFUser.current()?.objectId)!)")
         location["usersconnected"] = userConnectedDic
        
         let locationInfoUser = NSMutableDictionary()

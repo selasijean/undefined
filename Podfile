@@ -8,7 +8,8 @@ target 'undefined' do
   pod 'Parse'
 
   # Pods for undefined
-  pod 'Material', :git => 'https://github.com/CosmicMind/Material.git', :branch => 'master'
+  pod 'Material', :git => 'https://github.com/CosmicMind/Material.git', :branch => 'master’
+  use_frameworks!
 
   pod 'GoogleMaps'
 

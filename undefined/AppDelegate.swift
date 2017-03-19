@@ -15,7 +15,6 @@ import Material
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
@@ -29,7 +28,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         GMSServices.provideAPIKey("AIzaSyAsVaJd_VbB4lgnW4gpJD8PqZdY2jIRNZk")
         
         if PFUser.current() != nil{
-            
+            window?.isOpaque = false
+            window?.backgroundColor = UIColor.clear
             let storyboard = window?.rootViewController?.storyboard
             let homeVC = storyboard?.instantiateViewController(withIdentifier: "homepage")
             let menuVC = MenuViewController()
