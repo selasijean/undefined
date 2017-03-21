@@ -203,7 +203,52 @@ class MapViewController: UIViewController, UISearchDisplayDelegate{
         tableViewY = 143
         tableView.dataSource = self
         tableView.delegate = self
+        
+        let panGestureRec = UIPanGestureRecognizer()
+        panGestureRec.addTarget(self, action: #selector(panTableView))
+        tableView.addGestureRecognizer(panGestureRec)
+        panGestureRec.delegate = self
+        
         backgroundView.addSubview(tableView)
+        
+    }
+    
+    func panTableView(recognizer: UIPanGestureRecognizer){
+        let halfway = 143 + tableView.frame.height/2
+
+        let direction = recognizer.velocity(in: tableView)
+        
+        if (recognizer.state == .began && direction.y < 0 && tableView.frame.minY > 500){
+            UIView.animate(withDuration: 0.6, animations: { 
+                self.tableView.frame = CGRect(x: 0, y: self.tableView.frame.minY, width: 375, height: 527)
+            })
+        }
+        
+        let translation = recognizer.translation(in: tableView)
+        let y = tableView.frame.minY
+        
+        if direction.y > 0{
+            tableView.frame = CGRect(x: 0, y: y + translation.y, width: tableView.frame.width, height: tableView.frame.height)
+            recognizer.setTranslation(CGPoint.zero, in: tableView)
+        }
+        
+        if (direction.y < 0) && (tableView.frame.minY != 143){
+            tableView.frame = CGRect(x: 0, y: y + translation.y, width: tableView.frame.width, height: tableView.frame.height)
+            recognizer.setTranslation(CGPoint.zero, in: tableView)
+        }
+        
+        if (recognizer.state == .ended && tableView.frame.minY < halfway){
+            UIView.animate(withDuration: 0.5, animations: {
+                self.tableView.frame.origin.y = 143
+                self.startSearchBar.becomeFirstResponder()
+            })
+        }else if (recognizer.state == .ended && tableView.frame.minY >= halfway){
+            UIView.animate(withDuration: 0.4, animations: {
+                self.startSearchBar.resignFirstResponder()
+                self.tableView.frame = CGRect(x: 15, y: 590, width: 345, height: 527)
+            })
+        }
+        
         
     }
     
@@ -252,6 +297,27 @@ class MapViewController: UIViewController, UISearchDisplayDelegate{
         
     }
 
+}
+
+extension MapViewController : UIGestureRecognizerDelegate{
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        
+        let gesture = gestureRecognizer as! UIPanGestureRecognizer
+        let direction = gesture.velocity(in: tableView).y
+        
+        let y = tableView.frame.minY
+        
+        if (y == 143 && tableView.contentOffset.y == 0 && direction > 0) || ( y > 143){
+            tableView.isScrollEnabled = false
+        }else {
+            tableView.isScrollEnabled = true
+        }
+        
+        return true
+    }
+    
+    
 }
 extension MapViewController : UISearchBarDelegate{
     

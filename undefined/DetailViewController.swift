@@ -74,11 +74,6 @@ class DetailViewController: UIViewController, UIScrollViewDelegate, UIGestureRec
         radarChartDataSet.drawFilledEnabled = true
         let radarData = RadarChartData(dataSet: radarChartDataSet)
         
-//        var bottomConstraint2 = NSLayoutConstraint(item: barChartView, attribute: .bottom, relatedBy: .equal, toItem: demo, attribute: .top, multiplier: 1, constant: 70)
-//        scrollView.addConstraint(bottomConstraint2)
-        
-//        var bottomConstraint = NSLayoutConstraint(item: scrollView, attribute: .bottom, relatedBy: .equal, toItem: demo, attribute: .bottom, multiplier: 1, constant: 100)
-//        scrollView.addConstraint(bottomConstraint)
         
         demo.data = radarData
         barChartView.data = chartData
