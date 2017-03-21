@@ -8,16 +8,31 @@
 
 import UIKit
 import MXParallaxHeader
+import Charts
 
-class DetailViewController: UIViewController {
+class DetailViewController: UIViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate {
 
     @IBOutlet weak var scrollView: UIScrollView!
     var headerView: UIImageView!
     var location : Location?
     
+    @IBOutlet weak var demo: RadarChartView!
+    @IBOutlet weak var barChartView: BarChartView!
+    
+    var months: [String]!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupHeaderView()
+        
+        months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+//        let unitsSold = [20.0, 4.0, 6.0, 3.0, 12.0, 16.0, 4.0, 18.0, 2.0, 4.0, 5.0, 4.0]
+        let unitsSold = [20.0, 8.0, 6.0, 12.0, 12.0, 16.0, 4.0, 18.0, 6.0, 10.0, 8.0, 9.0]
+        
+        setChart(dataPoints: months, values: unitsSold)
+        scrollView.contentSize = CGSize(width: 375, height: 1000)
+        
+        
         // Do any additional setup after loading the view.
     }
     
@@ -31,6 +46,43 @@ class DetailViewController: UIViewController {
         scrollView.parallaxHeader.mode = .fill
         scrollView.parallaxHeader.minimumHeight = 20
     }
+    
+    func setChart(dataPoints: [String], values: [Double]) {
+        barChartView.noDataText = "You need to provide data for the chart."
+        
+        var dataEntries: [BarChartDataEntry] = []
+        
+        for i in 0..<dataPoints.count {
+            let dataEntry = BarChartDataEntry(x: Double(i), y: values[i])
+//            let dataEntry = BarChartDataEntry(value: values[i], xIndex: i)
+            dataEntries.append(dataEntry)
+        }
+        
+        let chartDataSet = BarChartDataSet(values: dataEntries, label: "Units Sold")
+        let chartData = BarChartData(dataSet: chartDataSet)
+        barChartView.dragEnabled = false
+        barChartView.chartDescription?.text = "Test"
+        
+        var frame = barChartView.frame
+        frame.origin.y = frame.origin.y + barChartView.frame.size.height + 50
+//        let demo = RadarChartView(frame: frame)
+        scrollView.addSubview(demo)
+//        let radarDataEntry = RadarChartDataEntry(
+        let radarChartDataSet = RadarChartDataSet(values: dataEntries, label: "Units Sold")
+        radarChartDataSet.drawValuesEnabled = false
+        radarChartDataSet.fillColor = UIColor.blue
+        radarChartDataSet.drawFilledEnabled = true
+        let radarData = RadarChartData(dataSet: radarChartDataSet)
+        
+//        var bottomConstraint2 = NSLayoutConstraint(item: barChartView, attribute: .bottom, relatedBy: .equal, toItem: demo, attribute: .top, multiplier: 1, constant: 70)
+//        scrollView.addConstraint(bottomConstraint2)
+        
+//        var bottomConstraint = NSLayoutConstraint(item: scrollView, attribute: .bottom, relatedBy: .equal, toItem: demo, attribute: .bottom, multiplier: 1, constant: 100)
+//        scrollView.addConstraint(bottomConstraint)
+        
+        demo.data = radarData
+        barChartView.data = chartData
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -40,7 +92,9 @@ class DetailViewController: UIViewController {
     @IBAction func dismissVC(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
+    
 
+    
     /*
     // MARK: - Navigation
 

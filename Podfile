@@ -13,6 +13,7 @@ target 'undefined' do
 
   pod 'GoogleMaps'
 
+  pod 'Charts', :git => 'https://github.com/danielgindi/Charts.git', :branch => 'master'
 
   pod 'Alamofire', :git => 'https://github.com/Alamofire/Alamofire.git', :branch => 'master'
 

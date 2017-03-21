@@ -200,7 +200,7 @@
                                 <rect key="frame" x="0.0" y="137" width="375" height="530"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tt5-Fj-HsV">
+                                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tt5-Fj-HsV" customClass="BarChartView" customModule="Charts">
                                         <rect key="frame" x="7" y="17" width="359" height="286"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" red="0.88001763070000005" green="0.95686274510000002" blue="0.95038500889999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -245,7 +245,7 @@
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rk6-6U-DrL">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0vc-W5-ZPU">
+                                    <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0vc-W5-ZPU" customClass="BarChartView" customModule="Charts">
                                         <rect key="frame" x="0.0" y="8" width="375" height="387"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="laj-lw-dIk">
@@ -262,39 +262,37 @@
                                             <constraint firstAttribute="height" constant="387" id="fEV-eD-1b6"/>
                                         </constraints>
                                     </view>
-                                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FZj-T3-w24">
-                                        <rect key="frame" x="0.0" y="417" width="375" height="57"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Number of People" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uh2-bN-hjc">
-                                                <rect key="frame" x="8" y="18" width="156" height="31"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                <nil key="textColor"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                        </subviews>
-                                        <color key="backgroundColor" red="0.87540758819999998" green="0.90013785300000004" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="t16-Nr-JZG" customClass="RadarChartView" customModule="Charts">
+                                        <rect key="frame" x="0.0" y="418" width="375" height="318"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="318" id="gat-FR-Hyg"/>
+                                        </constraints>
                                     </view>
                                 </subviews>
                                 <constraints>
+                                    <constraint firstItem="0vc-W5-ZPU" firstAttribute="trailing" secondItem="t16-Nr-JZG" secondAttribute="trailing" id="2Mb-7Q-fvA"/>
+                                    <constraint firstItem="t16-Nr-JZG" firstAttribute="top" secondItem="0vc-W5-ZPU" secondAttribute="bottom" constant="23" id="87M-fa-pKe"/>
                                     <constraint firstItem="0vc-W5-ZPU" firstAttribute="top" secondItem="rk6-6U-DrL" secondAttribute="top" constant="10" id="My0-1i-n6V"/>
+                                    <constraint firstItem="0vc-W5-ZPU" firstAttribute="leading" secondItem="t16-Nr-JZG" secondAttribute="leading" id="gXM-mN-xNG"/>
                                     <constraint firstAttribute="trailing" secondItem="0vc-W5-ZPU" secondAttribute="trailing" id="qcq-2N-eiy"/>
                                     <constraint firstItem="0vc-W5-ZPU" firstAttribute="centerX" secondItem="rk6-6U-DrL" secondAttribute="centerX" id="rlo-Ym-5G6"/>
                                     <constraint firstItem="0vc-W5-ZPU" firstAttribute="leading" secondItem="rk6-6U-DrL" secondAttribute="leading" id="ruw-id-hn2"/>
-                                    <constraint firstAttribute="bottom" secondItem="0vc-W5-ZPU" secondAttribute="bottom" constant="272" id="tHc-qu-CoY"/>
+                                    <constraint firstAttribute="bottom" secondItem="t16-Nr-JZG" secondAttribute="bottom" constant="69" id="yal-YC-pmk"/>
                                 </constraints>
                             </scrollView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="rk6-6U-DrL" firstAttribute="top" secondItem="pi2-Xy-yxB" secondAttribute="top" id="N7t-LL-IOT"/>
+                            <constraint firstItem="AGu-wx-hH4" firstAttribute="top" secondItem="rk6-6U-DrL" secondAttribute="bottom" id="Nmo-ud-4sw"/>
                             <constraint firstItem="rk6-6U-DrL" firstAttribute="leading" secondItem="pi2-Xy-yxB" secondAttribute="leading" id="O9C-C7-FZz"/>
                             <constraint firstAttribute="trailing" secondItem="rk6-6U-DrL" secondAttribute="trailing" id="bsB-vs-NWN"/>
-                            <constraint firstItem="rk6-6U-DrL" firstAttribute="bottom" secondItem="AGu-wx-hH4" secondAttribute="top" id="n6V-Hb-5of"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="barChartView" destination="0vc-W5-ZPU" id="2Ue-FQ-H1L"/>
+                        <outlet property="demo" destination="t16-Nr-JZG" id="IkP-8E-c3z"/>
                         <outlet property="scrollView" destination="rk6-6U-DrL" id="FpK-Z7-Sag"/>
                     </connections>
                 </viewController>
