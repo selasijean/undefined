@@ -13,7 +13,10 @@ import Parse
 
 class MapViewController: UIViewController, UISearchDisplayDelegate{
     
+    //
     var parentVC: MainViewController?
+    
+    
     var frameForSearchBarsSuperView: CGRect = CGRect(x: 0, y: 0, width: 375, height: 142)
     var frameForStartSearchBar: CGRect!
     var frameForDestinationSearchBar: CGRect!
@@ -52,7 +55,7 @@ class MapViewController: UIViewController, UISearchDisplayDelegate{
         setUpMainBar()
         setUpBackButton()
         setupTableView()
-        configurePlaceAutoComplete()
+        
         hideLocationDetailView()
         
         locationManager.delegate = self
@@ -95,8 +98,7 @@ class MapViewController: UIViewController, UISearchDisplayDelegate{
         location["place_id"] = (selectedLocation?.placeID)!
         
         let userConnectedDic = NSMutableDictionary()
-//        let etaData = ["etaInSeconds" : ]
-//        userConnectedDic.setValue("29mins", forKey: "\((PFUser.current()?.objectId)!)")
+
         location["usersconnected"] = userConnectedDic
        
         let locationInfoUser = NSMutableDictionary()
@@ -227,12 +229,13 @@ class MapViewController: UIViewController, UISearchDisplayDelegate{
         let translation = recognizer.translation(in: tableView)
         let y = tableView.frame.minY
         
-        if direction.y > 0{
+        if direction.y > 0 && (tableView.contentOffset.y == 0){
             tableView.frame = CGRect(x: 0, y: y + translation.y, width: tableView.frame.width, height: tableView.frame.height)
             recognizer.setTranslation(CGPoint.zero, in: tableView)
         }
         
-        if (direction.y < 0) && (tableView.frame.minY != 143){
+        
+        if (direction.y < 0) && (tableView.frame.minY > 145){
             tableView.frame = CGRect(x: 0, y: y + translation.y, width: tableView.frame.width, height: tableView.frame.height)
             recognizer.setTranslation(CGPoint.zero, in: tableView)
         }
@@ -287,7 +290,7 @@ class MapViewController: UIViewController, UISearchDisplayDelegate{
 
         // Set up the autocomplete filter.
         let filter = GMSAutocompleteFilter()
-        filter.type = .noFilter
+        filter.type = .address
         
         // Create the fetcher.
         fetcher = GMSAutocompleteFetcher(bounds: bounds, filter: filter)
@@ -344,6 +347,8 @@ extension MapViewController : UISearchBarDelegate{
         startSearchBar.text = ""
         googleMapsPredictions = []
         searchResults = []
+        tableView.reloadData()
+        
         startSearchBar.resignFirstResponder()
     }
     
@@ -433,6 +438,7 @@ extension MapViewController: CLLocationManagerDelegate {
         if let location = locations.first {
             mapVIew.camera = GMSCameraPosition(target: location.coordinate, zoom: 15, bearing: 0, viewingAngle: 0)
             locationManager.stopUpdatingLocation()
+            configurePlaceAutoComplete()
         }
     }
     

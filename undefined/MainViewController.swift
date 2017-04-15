@@ -11,7 +11,7 @@ import Parse
 import Material
 
 class MainViewController: UIViewController {
-
+    
     @IBOutlet weak var tableViewFooterView: UIView!
     @IBOutlet weak var mainHeaderView: UIView!
     @IBOutlet weak var tableViewHeaderView: UIView!
@@ -46,6 +46,7 @@ class MainViewController: UIViewController {
     }
     
     func setupTableView(){
+        
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = Color.clear
@@ -175,7 +176,6 @@ extension MainViewController: UITableViewDataSource{
         let fetcher = DataRequester()
         let cell = tableView.dequeueReusableCell(withIdentifier: "locationCell", for: indexPath) as! LocationTableViewCell
         fetcher.cell = cell
-//        print(indexPath)
         let info = userLocations[indexPath.row]
         cell.setLocation(text: info.name!)
         if currentLocation?.coordinate != nil{

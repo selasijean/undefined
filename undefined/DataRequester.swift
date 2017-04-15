@@ -16,13 +16,16 @@ class DataRequester: NSObject {
     var tableView: UITableView?
 
     func getETA(destination: Location, currentLocationCoords: CLLocationCoordinate2D) {
+        
 
-        let latitude = String(describing: destination.coordinates?.latitude)
-        let longitude = String(describing: destination.coordinates?.longitude)
+        let latitude = String(describing: currentLocationCoords.latitude)
+        let longitude = String(describing: currentLocationCoords.longitude)
         let destString = "=place_id:" + "\((destination.placeID)!)"
-        let path = ("https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + "\(latitude)" + "\(longitude)" + "&destinations" + "\(destString)" + "&key=AIzaSyC3DeaKs0Dg4iipA-N2bfu0qJyvkJAtc9g").addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
-
+        let path = ("https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + "\(latitude)," + "\(longitude)" + "&destinations" + "\(destString)" + "&key=AIzaSyC3DeaKs0Dg4iipA-N2bfu0qJyvkJAtc9g").addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+        
+        
         let urlString = URL(string: path!)
+//        print(urlString!)
         let config = URLSessionConfiguration.default
         let urlSession = URLSession(configuration: config)
         
@@ -35,9 +38,12 @@ class DataRequester: NSObject {
                     if let usableData = data {
                         let json = try? JSONSerialization.jsonObject(with: usableData, options: []) as! NSDictionary
                         let rows = json!["rows"] as? [NSDictionary]
+                        print(rows)
                         if let first = rows?.first{
                             let firstElement = first["elements"] as? [NSDictionary]
+//                            print(firstElement)
                             if let duration = firstElement?.first!["duration"] as? NSDictionary{
+//                                print(duration)
                                 if let etaText = duration["text"] as? String{
                                     var connectedUsers = destination.usersConnectedWithETA
                                     let currentUserID = PFUser.current()?.objectId
@@ -54,8 +60,7 @@ class DataRequester: NSObject {
 
                                 }
                             }
-
-                            
+                          
                         }
                     }
                 }

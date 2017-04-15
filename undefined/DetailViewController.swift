@@ -58,7 +58,7 @@ class DetailViewController: UIViewController, UIScrollViewDelegate, UIGestureRec
             dataEntries.append(dataEntry)
         }
         
-        let chartDataSet = BarChartDataSet(values: dataEntries, label: "Units Sold")
+        let chartDataSet = BarChartDataSet(values: dataEntries, label: "Number of people arriving")
         let chartData = BarChartData(dataSet: chartDataSet)
         barChartView.dragEnabled = false
         barChartView.chartDescription?.text = "Test"
@@ -68,7 +68,7 @@ class DetailViewController: UIViewController, UIScrollViewDelegate, UIGestureRec
 //        let demo = RadarChartView(frame: frame)
         scrollView.addSubview(demo)
 //        let radarDataEntry = RadarChartDataEntry(
-        let radarChartDataSet = RadarChartDataSet(values: dataEntries, label: "Units Sold")
+        let radarChartDataSet = RadarChartDataSet(values: dataEntries, label: "Number of people arriving")
         radarChartDataSet.drawValuesEnabled = false
         radarChartDataSet.fillColor = UIColor.blue
         radarChartDataSet.drawFilledEnabled = true
