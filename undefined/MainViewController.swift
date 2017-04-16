@@ -27,13 +27,14 @@ class MainViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        locationManager.delegate = self
+        locationManager.requestWhenInUseAuthorization()
         setupTableView()
         setHeaderView()
         setupFooterView()
         pullCurrentUserLocations()
         
-        locationManager.delegate = self
-        locationManager.requestWhenInUseAuthorization()
+        
         
         setupRefreshControl()
         
@@ -50,11 +51,7 @@ class MainViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = Color.clear
-//        tableView.layer.cornerRadius = 20
-//        tableView.layer.masksToBounds = true
-//        tableView.tableFooterView?.isUserInteractionEnabled = true
-        
-        
+    
     }
     
     func setHeaderView(){
@@ -69,15 +66,7 @@ class MainViewController: UIViewController {
     }
     
     func setupFooterView(){
-//        let footerView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 50))
-//        footerView.backgroundColor = UIColor.black
-//        footerView.isUserInteractionEnabled = true
-//        let addButton = UIButton()
-//        addButton.frame = footerView.frame
-//        addButton.setTitle("Add Location", for: .normal)
-//        addButton.addTarget(self, action: #selector(addLocationButtonSelected), for: .touchUpInside)
-//        footerView.addSubview(addButton)
-        
+
         let path = UIBezierPath(roundedRect:tableViewFooterView.bounds, byRoundingCorners:[.bottomRight], cornerRadii: CGSize(width: 30, height: 30))
         let maskLayer = CAShapeLayer()
         maskLayer.frame = tableViewFooterView.bounds
@@ -85,7 +74,6 @@ class MainViewController: UIViewController {
         tableViewFooterView.layer.mask = maskLayer
         tableViewFooterView.borderColor = tableViewFooterView.borderColor?.withAlphaComponent(0.3)
         addLocationButton.addTarget(self, action: #selector(addLocationButtonSelected), for: .touchUpInside)
-        
         tableView.tableFooterView = tableViewFooterView
         tableView.tableFooterView?.isUserInteractionEnabled = true
         
@@ -111,6 +99,9 @@ class MainViewController: UIViewController {
                         
                         if let object = pfObject{
                             let location = Location(pfObject: object)
+                            location.currentLocationCoords = self.currentLocation
+                            location.getETA {
+                            }
                             self.userLocations.append(location)
                             self.tableView.reloadData()
                         }
@@ -173,17 +164,14 @@ extension MainViewController: UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let fetcher = DataRequester()
         let cell = tableView.dequeueReusableCell(withIdentifier: "locationCell", for: indexPath) as! LocationTableViewCell
-        fetcher.cell = cell
         let info = userLocations[indexPath.row]
         cell.setLocation(text: info.name!)
         if currentLocation?.coordinate != nil{
-            fetcher.getETA(destination: info, currentLocationCoords: (currentLocation?.coordinate)!)
+
+            cell.setETA(text: info.eta)
         }
-//        cell.layer.cornerRadius = 10
-////        cell.borderColor = Color.grey.darken1
-//        cell.borderWidth = 1
+
         return cell
         
     }
